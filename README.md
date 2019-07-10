@@ -37,7 +37,7 @@
 * `api/user.db` - Sqlite3 database with the records;
 * `database/db.py`:
 ```
-    1. creates a Sqlite3 database, with the specified;
+    1. creates a Sqlite3 database, with the name specified;
     2. creates a table in the database;
 ```
 
