@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: python_http_api-service
+  name: python-http-api-service
 spec:
   selector:
-    app: python_http_api
+    app: python-http-api
   ports:
   - protocol: "TCP"
-    port: 6000
+    port: 8080
     targetPort: 5000
   type: LoadBalancer
 
@@ -15,20 +15,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python_http_api
+  name: python-http-api
 spec:
   selector:
     matchLabels:
-      app: python_http_api
+      app: python-http-api
   replicas: 1
   template:
     metadata:
       labels:
-        app: python_http_api
+        app: python-http-api
     spec:
       containers:
-      - name: python_http_api
-        image: python_http_api:latest
-        imagePullPolicy: Never
+      - name: python-http-api
+        image: python_http_api:1.0.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
