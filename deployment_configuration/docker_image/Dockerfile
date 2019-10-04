@@ -10,4 +10,5 @@ RUN wget https://github.com/dnatalchuk/python3-http-based-api/archive/master.tar
 WORKDIR python3-http-based-api-master/api
 
 EXPOSE 5000
-CMD ["./server.py"]
+
+CMD ["python", "/app/main.py"]
