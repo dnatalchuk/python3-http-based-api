@@ -11,4 +11,4 @@ WORKDIR python3-http-based-api-master/api
 
 EXPOSE 5000
 
-CMD ["python", "/app/main.py"]
+CMD ["python", "server.py"]
