@@ -4,6 +4,12 @@
 
 > Handle HTTP requests to update and fetch data from the database.
 
+## Prerequisites:
+* `Python 3.7.6`
+* `Docker Desktop version: 2.2.0.0`
+* `kubernetes v1.15.5`
+
+
 ## Table of contents and structure
 
 ```
@@ -81,4 +87,9 @@ Any other day:
 ## Building the docker image and deployment into K8S:
 ```
 cd deployment_configuration/docker_image
+docker build -t python_http_api:1.0.0 .
+kubectl apply -f ../kubernetes/deployment.yaml
+kubectl get pods
+kubectl port-forward *pod_name* 5000:5000
+http://127.0.0.1:5000/hello/John_Doe
 ```
