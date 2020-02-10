@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
   This module has the following purposes:
     1. creates API with the Flask framework used;
@@ -20,65 +21,72 @@ Example:
     $ ./server.py
 """
 
+import logging
+import sys
 import flask
 from flask import request, jsonify
 import sqlite3
 import datetime
 from datetime import date
 
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
 
 app = flask.Flask(__name__)
 
+@app.route('/hello/<username>', methods=['GET'])
+def get_user(username):
+    user = "{}".format(username)
+    conn = sqlite3.connect('users.db')
+    cur = conn.cursor()
+    query = cur.execute("SELECT DATE_OF_BIRTH FROM USERS WHERE\
+    USERNAME=?", (user,))
+    logging.info("Query has been executed")
+    dateOfBirth = cur.fetchone()
+    if dateOfBirth is None:
+        logging.warning(" Not existing username")
+        return jsonify("message: User not found, please add new one")
+    date_split = dateOfBirth[0].split('-')
+    y, m, d = date_split
+    today = datetime.date.today()
+    year = date.today().year
+    birthday = date(int(year), int(m), int(d))
+    if today > birthday:
+        year += 1
+        birthday = date(int(year), int(m), int(d))
+        delta = abs((today - birthday).days)
+    elif today == birthday:
+        return jsonify("message: Hello, {}! Happy birthday".format(username))
+    else:
+        birthday = date(int(year), int(m), int(d))
+        delta = (birthday - today).days
 
-@app.route('/hello/<username>', methods=['GET', 'POST'])
-def api(username):
-    if request.method == 'GET':
+    return jsonify("message: Hello, {}! Your birthday in {} day(s)".format(username, delta))
+
+@app.route('/hello/<username>', methods=['POST'])
+def post_data(username):
+    req_data = request.get_json()
+    dateOfBirth = req_data['dateOfBirth']
+    with sqlite3.connect('users.db') as conn:
         user = "{}".format(username)
         conn = sqlite3.connect('users.db')
         cur = conn.cursor()
         query = cur.execute("SELECT DATE_OF_BIRTH FROM USERS WHERE\
         USERNAME=?", (user,))
-        dateOfBirth = cur.fetchone()
-        date_split = dateOfBirth[0].split('-')
-        y, m, d = date_split
-        today = datetime.date.today()
-        year = date.today().year
-        birthday = date(int(year), int(m), int(d))
-        if today > birthday:
-            year += 1
-            birthday = date(int(year), int(m), int(d))
-            delta = abs((today - birthday).days)
-        elif today == birthday:
-            return jsonify("message: Hello, {}! Happy birthday"
-                           .format(username))
-        else:
-            birthday = date(int(year), int(m), int(d))
-            delta = (birthday - today).days
-
-        return jsonify("message: Hello, {}! Your birthday in {} day(s)"
-                       .format(username, delta))
-
-    if request.method == 'POST':
-        req_data = request.get_json()
-        dateOfBirth = req_data['dateOfBirth']
-        with sqlite3.connect('users.db') as conn:
-            user = "{}".format(username)
-            conn = sqlite3.connect('users.db')
-            cur = conn.cursor()
-            query = cur.execute("SELECT DATE_OF_BIRTH FROM USERS WHERE\
-             USERNAME=?", (user,))
-            result = query.fetchall()
-            if len(result) == 0:
-                conn.execute('INSERT INTO USERS (USERNAME,DATE_OF_BIRTH)\
+        result = query.fetchall()
+        if len(result) == 0:
+            conn.execute('INSERT INTO USERS (USERNAME,DATE_OF_BIRTH)\
                 VALUES (?,?)', (username, dateOfBirth))
-                conn.commit()
-                return jsonify("Record for {} and date of birth {} successfully\
+            conn.commit()
+            return jsonify("Record for {} and date of birth {} successfully\
                 ADDED".format(username, dateOfBirth))
-            else:
-                conn.execute('UPDATE USERS SET DATE_OF_BIRTH=? WHERE \
-                USERNAME=?', (dateOfBirth, username))
-                conn.commit()
-                return jsonify("Record for {} has been UPDATED with date of \
+        else:
+            conn.execute('UPDATE USERS SET DATE_OF_BIRTH=? WHERE \
+            USERNAME=?', (dateOfBirth, username))
+            conn.commit()
+            return jsonify("Record for {} has been UPDATED with date of \
                             birth {}".format(username, dateOfBirth))
 
 

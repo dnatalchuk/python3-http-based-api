@@ -47,8 +47,10 @@
 * Start the application with next commands:
 
 ```
-    $ cd challenge/
+    $ cd python3-http-based-api/
+    $ virtualenv -p python3 ./venv
     $ source venv/bin/activate
+    $ pip3 install -r requirements.txt
     $ cd api/
     $ ./server.py
 ```
@@ -75,3 +77,8 @@ If birthday is today:
 Any other day:
 ```
 ![alt text](readme_images/4.png)
+
+## Building the docker image and deployment into K8S:
+```
+cd deployment_configuration/docker_image
+```
