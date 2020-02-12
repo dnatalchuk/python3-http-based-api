@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+    name: python-http-api-service
+spec:
+    selector:
+        app: python-http-api
+    ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30000
+    type: NodePort

@@ -13,17 +13,23 @@
 ## Table of contents and structure
 
 ```
+.
 ├── README.md
 ├── api
-│   ├── server.py
-│   └── users.db
+│   ├── server.py
+│   └── users.db
 ├── database
-│   └── db.py
+│   └── db.py
+├── deployment_configuration
+│   ├── docker_image
+│   │   └── Dockerfile
+│   └── kubernetes
+│       ├── deployment.yaml
+│       └── service.yaml
 ├── readme_images
 ├── requirements.txt
-└── users.db
-└── venv
-
+└── tests
+    └── server_test.py
 ```
 
 ## Scope:
@@ -85,11 +91,14 @@ Any other day:
 ![alt text](readme_images/4.png)
 
 ## Building the docker image and deployment into K8S:
+![alt text](https://www.cyberark.com/wp-content/uploads/2018/12/kubernetes-labs-post-1.jpg)
 ```
 cd deployment_configuration/docker_image
 docker build -t python_http_api:1.0.0 .
 kubectl apply -f ../kubernetes/deployment.yaml
-kubectl get pods
-kubectl port-forward *pod_name* 5000:5000
-http://127.0.0.1:5000/hello/John_Doe
+kubectl apply -f ../kubernetes/service.yaml
+```
+* Navigate in browser to http://localhost:30000/hello/John_Doe and `JSON` data should be rendered as followed:
+```
+"message: Hello, John_Doe! Your birthday in 147 day(s)"
 ```
