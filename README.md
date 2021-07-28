@@ -1,5 +1,3 @@
-[![buddy pipeline](https://app.buddy.works/dnatalchuk/python3-http-based-api/pipelines/pipeline/215295/badge.svg?token=166eb6da4611042b6e67d44c5e327c02de285ebc2032441943a96089a3bed532 "buddy pipeline")](https://app.buddy.works/dnatalchuk/python3-http-based-api/pipelines/pipeline/215295)
-
 # Application that exposes HTTP-based API (implemented with Python Flask)
 
 > Handle HTTP requests to update and fetch data from the database.
